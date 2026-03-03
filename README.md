@@ -20,15 +20,24 @@ Kodi-Addon zum Ansehen von Live-Vorlesungsstreams der TU Wien via TUWEL (Lecture
 
 ### Via Repository (empfohlen)
 
-1. **Kodi → Einstellungen → Dateimanager → Quelle hinzufügen:**
-   ```
-   https://maximilian-sh.github.io/TuKodi/
-   ```
-   Name: `TuKodi Repo`
+**1. Unknown Sources aktivieren**
+Einstellungen → System → Add-ons → **Unbekannte Quellen** → Ein
 
-2. **Add-ons → Aus ZIP installieren → TuKodi Repo → `repository.tukodi/` → `repository.tukodi-2026.3.3.zip`**
+**2. Quelle hinzufügen**
+Einstellungen → Dateimanager → Quelle hinzufügen → folgende URL eingeben:
+```
+https://maximilian-sh.github.io/TuKodi/
+```
+Name: `TuKodi Repo` → OK
 
-3. **Add-ons → Aus Repository installieren → TuKodi Repository → Video-Add-ons → TuKodi**
+**3. Repository-Addon installieren**
+Einstellungen → Add-ons → Aus ZIP-Datei installieren → `TuKodi Repo` → `repository.tukodi/` → `repository.tukodi-2026.3.3.zip`
+
+**4. TuKodi aus dem Repository installieren**
+Add-ons → Add-on Browser → Aus Repository installieren → `TuKodi Repository` → Video-Add-ons → `TuKodi - TU Wien Streams` → Installieren
+
+**5. Zugangsdaten eintragen**
+TuKodi → Einstellungen → Benutzername (Matrikelnummer) + Passwort eintragen
 
 Kodi prüft danach automatisch auf Updates.
 
