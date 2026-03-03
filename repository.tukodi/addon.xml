@@ -21,9 +21,6 @@
     <description lang="en">Repository for TuKodi - TU Wien lecture streams addon.</description>
     <platform>all</platform>
     <license>MIT</license>
-    <assets>
-      <icon>icon.png</icon>
-    </assets>
   </extension>
 
 </addon>
