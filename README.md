@@ -26,7 +26,7 @@ Einstellungen → System → Add-ons → **Unbekannte Quellen** → Ein
 **2. Quelle hinzufügen**
 Einstellungen → Dateimanager → `<Quelle hinzufügen>` → URL direkt ins Textfeld eingeben (nicht Browse):
 ```
-https://maximilian-sh.github.io/TuKodi/
+https://raw.githubusercontent.com/maximilian-sh/TuKodi/gh-pages/
 ```
 Name: `TuKodi Repo` → OK
 
