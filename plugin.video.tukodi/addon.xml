@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="plugin.video.tukodi"
        name="TuKodi - TU Wien Streams"
-       version="1.0.0"
+       version="2026.3.3"
        provider-name="maximilian-sh">
 
   <requires>
