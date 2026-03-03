@@ -24,7 +24,7 @@ Kodi-Addon zum Ansehen von Live-Vorlesungsstreams der TU Wien via TUWEL (Lecture
 Einstellungen → System → Add-ons → **Unbekannte Quellen** → Ein
 
 **2. Quelle hinzufügen**
-Einstellungen → Dateimanager → Quelle hinzufügen → folgende URL eingeben:
+Einstellungen → Dateimanager → `<Quelle hinzufügen>` → URL direkt ins Textfeld eingeben (nicht Browse):
 ```
 https://maximilian-sh.github.io/TuKodi/
 ```
