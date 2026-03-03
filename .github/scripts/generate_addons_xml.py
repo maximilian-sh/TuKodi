@@ -33,4 +33,8 @@ with open(addons_xml_path, 'rb') as f:
 with open('dist/addons.xml.md5', 'w') as f:
     f.write(md5)
 
+# Empty index.html so Kodi's file manager can verify the source URL (200 instead of 404)
+with open('dist/index.html', 'w') as f:
+    f.write('')
+
 print(f'Generated addons.xml (md5: {md5})')
