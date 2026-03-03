@@ -11,6 +11,8 @@ ADDONS = [
     'repository.tukodi',
 ]
 
+RAW_BASE = 'https://raw.githubusercontent.com/maximilian-sh/TuKodi/gh-pages'
+
 os.makedirs('dist', exist_ok=True)
 
 # --- addons.xml ---
@@ -44,11 +46,12 @@ def write_index(path, entries):
 # Root index: list addon subdirectories
 write_index('dist', [f'{a}/' for a in ADDONS])
 
-# Per-addon index: list the ZIP file
+# Per-addon index: link ZIP via raw.githubusercontent.com so Kodi's VFS can download it
 for addon_id in ADDONS:
     version = ET.parse(f'{addon_id}/addon.xml').getroot().get('version')
     zip_name = f'{addon_id}-{version}.zip'
+    zip_url = f'{RAW_BASE}/{addon_id}/{zip_name}'
     addon_dist = f'dist/{addon_id}'
     os.makedirs(addon_dist, exist_ok=True)
-    write_index(addon_dist, [zip_name])
-    print(f'  {addon_id}/index.html → {zip_name}')
+    write_index(addon_dist, [zip_url])
+    print(f'  {addon_id}/index.html → {zip_url}')
