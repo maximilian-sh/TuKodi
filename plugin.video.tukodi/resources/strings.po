@@ -1,0 +1,14 @@
+msgid ""
+msgstr ""
+
+msgctxt "#32000"
+msgid "Account"
+msgstr "Account"
+
+msgctxt "#32001"
+msgid "TUaccount Benutzername"
+msgstr "TUaccount Benutzername"
+
+msgctxt "#32002"
+msgid "Passwort"
+msgstr "Passwort"

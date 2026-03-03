@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings version="1">
+  <section id="plugin.video.tukodi">
+    <category id="account" label="32000">
+      <group id="1" label="TUaccount">
+        <setting id="username" type="string" label="32001">
+          <level>0</level>
+          <default />
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string">
+            <heading>32001</heading>
+          </control>
+        </setting>
+        <setting id="password" type="string" label="32002">
+          <level>0</level>
+          <default />
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string">
+            <hidden>true</hidden>
+            <heading>32002</heading>
+          </control>
+        </setting>
+      </group>
+    </category>
+  </section>
+</settings>
