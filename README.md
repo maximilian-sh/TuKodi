@@ -18,21 +18,27 @@ Kodi-Addon zum Ansehen von Live-Vorlesungsstreams der TU Wien via TUWEL (Lecture
 
 ## Installation
 
-### Via deploy.sh (SSH)
+### Via Repository (empfohlen)
+
+1. **Kodi → Einstellungen → Dateimanager → Quelle hinzufügen:**
+   ```
+   https://maximilian-sh.github.io/TuKodi/
+   ```
+   Name: `TuKodi Repo`
+
+2. **Add-ons → Aus ZIP installieren → TuKodi Repo → `repository.tukodi/` → `repository.tukodi-2026.3.3.zip`**
+
+3. **Add-ons → Aus Repository installieren → TuKodi Repository → Video-Add-ons → TuKodi**
+
+Kodi prüft danach automatisch auf Updates.
+
+### Für Entwickler (SSH deploy)
 
 ```bash
-KODI_USER=root ./deploy.sh
+KODI_HOST=192.168.x.x KODI_USER=root ./deploy.sh
 ```
 
 Das Script baut ein ZIP, kopiert das Addon per SCP zu deinem Kodi-Gerät und restartet es via JSONRPC.
-
-### Manuell
-
-```bash
-zip -r plugin.video.tukodi-1.0.0.zip plugin.video.tukodi
-```
-
-In Kodi: Einstellungen → Add-ons → Aus ZIP-Datei installieren.
 
 ## Konfiguration
 
