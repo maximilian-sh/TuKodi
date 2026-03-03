@@ -87,7 +87,7 @@ live.video.tuwien.ac.at/…/playlist.m3u8
 TUWEL verwendet SAML2 SSO via SimpleSAMLphp. Der Login-Flow:
 
 1. GET `tuwel.tuwien.ac.at/auth/saml2/login.php` → Redirect zum IdP
-2. POST credentials (+ optional TOTP) an `idp.zid.tuwien.ac.at/…/loginuserpass`
+2. POST credentials an `idp.zid.tuwien.ac.at/…/loginuserpass`
 3. SAMLResponse zurück an TUWEL ACS posten
 4. `MoodleSessiontuwel`-Cookie wird gesetzt und als Pickle gecacht
 
