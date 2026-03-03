@@ -9,9 +9,11 @@
   </requires>
 
   <extension point="xbmc.addon.repository" name="TuKodi Repository">
-    <info compressed="false">https://maximilian-sh.github.io/TuKodi/addons.xml</info>
-    <checksum>https://maximilian-sh.github.io/TuKodi/addons.xml.md5</checksum>
-    <datadir zip="true">https://maximilian-sh.github.io/TuKodi/</datadir>
+    <dir minversion="0.0.1" maxversion="99.99.99">
+      <info compressed="false">https://maximilian-sh.github.io/TuKodi/addons.xml</info>
+      <checksum>https://maximilian-sh.github.io/TuKodi/addons.xml.md5</checksum>
+      <datadir zip="true">https://maximilian-sh.github.io/TuKodi/</datadir>
+    </dir>
   </extension>
 
   <extension point="xbmc.addon.metadata">
