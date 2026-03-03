@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="repository.tukodi"
+       name="TuKodi Repository"
+       version="1.0.0"
+       provider-name="maximilian-sh">
+
+  <requires>
+    <import addon="xbmc.addon" version="12.0.0"/>
+  </requires>
+
+  <extension point="xbmc.addon.repository" name="TuKodi Repository">
+    <info compressed="false">https://maximilian-sh.github.io/TuKodi/addons.xml</info>
+    <checksum>https://maximilian-sh.github.io/TuKodi/addons.xml.md5</checksum>
+    <datadir zip="true">https://maximilian-sh.github.io/TuKodi/</datadir>
+  </extension>
+
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">TuKodi Repository</summary>
+    <description lang="en">Repository for TuKodi - TU Wien lecture streams addon.</description>
+    <platform>all</platform>
+    <license>MIT</license>
+    <assets>
+      <icon>icon.png</icon>
+    </assets>
+  </extension>
+
+</addon>

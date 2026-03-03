@@ -1,0 +1,47 @@
+name: Build & Release
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get versions
+        id: versions
+        run: |
+          PLUGIN_VER=$(python3 -c "import xml.etree.ElementTree as ET; print(ET.parse('plugin.video.tukodi/addon.xml').getroot().get('version'))")
+          REPO_VER=$(python3 -c "import xml.etree.ElementTree as ET; print(ET.parse('repository.tukodi/addon.xml').getroot().get('version'))")
+          echo "plugin_ver=$PLUGIN_VER" >> $GITHUB_OUTPUT
+          echo "repo_ver=$REPO_VER" >> $GITHUB_OUTPUT
+          echo "Plugin: $PLUGIN_VER  Repo: $REPO_VER"
+
+      - name: Build ZIPs
+        run: |
+          mkdir -p dist/plugin.video.tukodi
+          mkdir -p dist/repository.tukodi
+
+          zip -r "dist/plugin.video.tukodi/plugin.video.tukodi-${{ steps.versions.outputs.plugin_ver }}.zip" \
+            plugin.video.tukodi \
+            --exclude "*.pyc" --exclude "*/__pycache__/*" --exclude "*.DS_Store"
+
+          zip -r "dist/repository.tukodi/repository.tukodi-${{ steps.versions.outputs.repo_ver }}.zip" \
+            repository.tukodi \
+            --exclude "*.DS_Store"
+
+      - name: Generate addons.xml
+        run: python3 .github/scripts/generate_addons_xml.py
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: dist
+          force_orphan: true
