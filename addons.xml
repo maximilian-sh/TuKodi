@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addons>
+    <addon id="plugin.video.tukodi" name="TuKodi - TU Wien Streams" version="2026.3.9.5" provider-name="maximilian-sh">
+        <requires>
+            <import addon="xbmc.python" version="3.0.0" />
+            <import addon="script.module.requests" version="2.27.0" />
+        </requires>
+        <extension point="xbmc.python.pluginsource" library="addon.py">
+            <provides>video</provides>
+        </extension>
+        <extension point="xbmc.addon.metadata">
+            <summary lang="en">Watch TU Wien lecture streams via TUWEL</summary>
+            <summary lang="de">TU Wien Vorlesungsstreams via TUWEL</summary>
+            <description lang="en">Watch live lecture streams from LectureTube at TU Wien. Logs into TUWEL automatically using your TUaccount credentials.</description>
+            <description lang="de">Schau dir live Vorlesungsstreams von LectureTube der TU Wien an. Loggt sich automatisch in TUWEL mit deinem TUaccount ein.</description>
+            <platform>all</platform>
+            <license>MIT</license>
+            <assets>
+                <icon>icon.png</icon>
+            </assets>
+        </extension>
+    </addon>
+    <addon id="repository.tukodi" name="TuKodi Repository" version="2026.3.3" provider-name="maximilian-sh">
+        <requires>
+            <import addon="xbmc.addon" version="12.0.0" />
+        </requires>
+        <extension point="xbmc.addon.repository" name="TuKodi Repository">
+            <dir>
+                <info compressed="false">https://raw.githubusercontent.com/maximilian-sh/TuKodi/gh-pages/addons.xml</info>
+                <checksum>https://raw.githubusercontent.com/maximilian-sh/TuKodi/gh-pages/addons.xml.md5</checksum>
+                <datadir zip="true">https://raw.githubusercontent.com/maximilian-sh/TuKodi/gh-pages/</datadir>
+            </dir>
+        </extension>
+        <extension point="xbmc.addon.metadata">
+            <summary lang="en">TuKodi Repository</summary>
+            <description lang="en">Repository for TuKodi - TU Wien lecture streams addon.</description>
+            <platform>all</platform>
+            <license>MIT</license>
+        </extension>
+    </addon>
+</addons>
