@@ -256,17 +256,19 @@ def play_opencast_episode(episode_url, episode_name=''):
             xbmcgui.Dialog().ok('TuKodi', 'Keine Video-URL gefunden.')
             return
 
-        # Resolve final URL through authenticated session (follows CDN redirects).
-        # This gives Kodi a direct, pre-authed URL — no cookies needed at playback.
-        if '.m3u8' not in video_url:
-            try:
-                r = session.get(video_url, allow_redirects=True, stream=True, timeout=15)
-                r.close()
-                video_url = r.url
-            except Exception:
-                pass
+        # Pass session cookies so Kodi can authenticate every chunk request.
+        # Do NOT resolve to the final CDN URL — signed tokens expire in ~2 min.
+        cookies = '; '.join(f'{c.name}={c.value}' for c in session.cookies)
+        ua = (
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
+            'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        )
+        extra = 'User-Agent=' + urllib.parse.quote(ua)
+        if cookies:
+            extra += '&Cookie=' + urllib.parse.quote(cookies)
+        url_with_auth = video_url + '|' + extra
 
-        li = xbmcgui.ListItem(label=episode_name, path=video_url)
+        li = xbmcgui.ListItem(label=episode_name, path=url_with_auth)
         li.setContentLookup(False)
         xbmcplugin.setResolvedUrl(HANDLE, True, li)
 
