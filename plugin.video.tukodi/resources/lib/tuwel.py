@@ -357,8 +357,13 @@ def get_opencast_video_url(session, episode_url):
     # Prefer presenter (camera), then presentation (slides)
     def _best_url(stream):
         sources = stream.get('sources', {})
-        # Prefer MP4 — supports x2+ speed and seeking in Kodi's native player.
-        # HLS desync audio at high playback speeds and then stalls.
+    def _best_url(stream):
+        sources = stream.get('sources', {})
+        # Prefer HLS master — ISA handles seeking within VOD playlists.
+        for hls in sources.get('hls', []):
+            if hls.get('master'):
+                return hls['src']
+        # Fallback: highest-res MP4
         best = None
         best_px = 0
         for mp4 in sources.get('mp4', []):
@@ -367,13 +372,7 @@ def get_opencast_video_url(session, episode_url):
             if px > best_px:
                 best_px = px
                 best = mp4['src']
-        if best:
-            return best
-        # Fallback: HLS master
-        for hls in sources.get('hls', []):
-            if hls.get('master'):
-                return hls['src']
-        return None
+        return best
 
     for content_pref in ('presenter', 'presentation'):
         for stream in streams:

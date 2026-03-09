@@ -256,21 +256,7 @@ def play_opencast_episode(episode_url, episode_name=''):
             xbmcgui.Dialog().ok('TuKodi', 'Keine Video-URL gefunden.')
             return
 
-        # Pass session cookies so Kodi can authenticate every chunk request.
-        # Do NOT resolve to the final CDN URL — signed tokens expire in ~2 min.
-        cookies = '; '.join(f'{c.name}={c.value}' for c in session.cookies)
-        ua = (
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
-            'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-        )
-        extra = 'User-Agent=' + urllib.parse.quote(ua)
-        if cookies:
-            extra += '&Cookie=' + urllib.parse.quote(cookies)
-        url_with_auth = video_url + '|' + extra
-
-        li = xbmcgui.ListItem(label=episode_name, path=url_with_auth)
-        li.setContentLookup(False)
-        xbmcplugin.setResolvedUrl(HANDLE, True, li)
+        _play_m3u8(video_url, episode_name)
 
     except Exception as e:
         xbmcgui.Dialog().ok('TuKodi', f'Fehler beim Laden der Aufzeichnung: {e}')
