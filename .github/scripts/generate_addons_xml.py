@@ -4,6 +4,7 @@ so Kodi's file manager can navigate the repository like a directory.
 """
 import hashlib
 import os
+import shutil
 import xml.etree.ElementTree as ET
 
 ADDONS = [
@@ -56,4 +57,8 @@ for addon_id in ADDONS:
     addon_dist = f'dist/{addon_id}'
     os.makedirs(addon_dist, exist_ok=True)
     write_index(addon_dist, [zip_name])
+    # Copy icon so Kodi can load it from raw.githubusercontent.com
+    icon_src = f'{addon_id}/icon.png'
+    if os.path.exists(icon_src):
+        shutil.copy(icon_src, f'{addon_dist}/icon.png')
     print(f'  {addon_id}/index.html → {zip_name}')
