@@ -54,17 +54,68 @@ def room_stream_url(room_code):
     return f'{LECTURETUBE_LIVE_BASE}/{room_code}/playlist.m3u8'
 
 
+def _extract_sesskey(html):
+    """Extract Moodle sesskey from page HTML."""
+    m = re.search(r'"sesskey"\s*:\s*"([^"]+)"', html)
+    if m:
+        return m.group(1)
+    m = re.search(r"sesskey\s*[=:]\s*['\"]([a-zA-Z0-9]+)['\"]", html)
+    if m:
+        return m.group(1)
+    return None
+
+
+def _get_enrolled_courses_api(session, sesskey):
+    """
+    Fetch enrolled courses via Moodle's AJAX API.
+    Returns list of dicts: {id, name, url}, or None on failure.
+    """
+    import json as _json
+    url = f'{TUWEL_BASE}/lib/ajax/service.php?sesskey={sesskey}&info=core_course_get_enrolled_courses_by_timeline_classification'
+    payload = [{"index": 0, "methodname": "core_course_get_enrolled_courses_by_timeline_classification", "args": {"offset": 0, "limit": 0, "classification": "all", "sort": "fullname", "customfieldname": "", "customfieldvalue": ""}}]
+    try:
+        resp = session.post(url, json=payload, timeout=15)
+        data = resp.json()
+        if not data or not isinstance(data, list):
+            return None
+        result = data[0]
+        if result.get('error'):
+            return None
+        courses_data = result.get('data', {}).get('courses', [])
+        courses = []
+        for c in courses_data:
+            course_id = str(c.get('id', ''))
+            name = c.get('fullname', '') or c.get('shortname', '')
+            if course_id and name:
+                courses.append({
+                    'id': course_id,
+                    'name': name,
+                    'url': f'{TUWEL_BASE}/course/view.php?id={course_id}',
+                })
+        return courses if courses else None
+    except Exception:
+        return None
+
+
 def get_enrolled_courses(session):
     """
-    Fetch enrolled courses from the TUWEL dashboard.
-    Returns list of dicts: {id, shortname, fullname, url}
+    Fetch enrolled courses from TUWEL.
+    Tries Moodle AJAX API first (reliable with newer Moodle/JS-rendered pages),
+    falls back to HTML scraping.
+    Returns list of dicts: {id, name, url}
     """
     resp = session.get(TUWEL_BASE + '/my/courses.php', timeout=15)
     html = resp.text
-    courses = []
 
-    # Find course links in the page
-    # Pattern: /course/view.php?id=XXXX
+    # Try Moodle AJAX API (Moodle 4.x renders course list client-side)
+    sesskey = _extract_sesskey(html)
+    if sesskey:
+        courses = _get_enrolled_courses_api(session, sesskey)
+        if courses:
+            return courses
+
+    # Fallback: HTML scraping
+    courses = []
     matches = re.findall(
         r'href="(https://tuwel\.tuwien\.ac\.at/course/view\.php\?id=(\d+))"[^>]*>'
         r'(.*?)</a>',
@@ -75,7 +126,6 @@ def get_enrolled_courses(session):
         if course_id in seen:
             continue
         seen.add(course_id)
-        # Clean up name
         name = re.sub(r'<[^>]+>', '', name).strip()
         name = re.sub(r'\s+', ' ', name)
         if name:
@@ -224,30 +274,52 @@ def get_course_opencast(session, course_url):
 def get_opencast_episodes(session, opencast_url):
     """
     Fetch the Opencast series list page and return all episodes.
-    Returns list of dicts: {id, name, date, duration, url}
+    Returns list of dicts: {id, name, date, duration, url, thumb}
     """
     resp = session.get(opencast_url, timeout=15)
     html = resp.text
     episodes = []
     seen = set()
 
-    # Each row: <a href="...?id=X&e=UUID">Title</a>  date  duration
-    matches = re.findall(
-        r'href="(https://tuwel\.tuwien\.ac\.at/mod/opencast/view\.php\?[^"]*&amp;e=([^"&]+))"[^>]*>'
-        r'(.*?)</a>'
-        r'.*?<td[^>]*>([^<]*)</td>'   # duration
-        r'.*?<td[^>]*>([^<]*)</td>',  # date
-        html, re.DOTALL
-    )
-    for url, ep_id, name, duration, date in matches:
+    # Parse row by row to extract thumbnail, title, duration, date together
+    for row_m in re.finditer(r'<tr[^>]*>(.*?)</tr>', html, re.DOTALL):
+        row = row_m.group(1)
+
+        link_m = re.search(
+            r'href="(https://tuwel\.tuwien\.ac\.at/mod/opencast/view\.php\?[^"]*&amp;e=([^"&]+))"[^>]*>(.*?)</a>',
+            row, re.DOTALL
+        )
+        if not link_m:
+            continue
+
+        url, ep_id, name = link_m.groups()
         if ep_id in seen:
             continue
         seen.add(ep_id)
+
         name = re.sub(r'<[^>]+>', '', name).strip()
         name = re.sub(r'\s+', ' ', name)
         url = url.replace('&amp;', '&')
-        duration = duration.strip()
-        date = date.strip()
+
+        # Extract thumbnail image if present in the row
+        thumb = None
+        img_m = re.search(r'<img[^>]+src=["\']([^"\']+)["\']', row)
+        if img_m:
+            thumb = img_m.group(1)
+            if thumb.startswith('/'):
+                thumb = TUWEL_BASE + thumb
+
+        # Extract plain-text cells (skip cells containing links — those are title cells)
+        plain_cells = []
+        for cell in re.findall(r'<td[^>]*>(.*?)</td>', row, re.DOTALL):
+            if '<a ' not in cell:
+                text = re.sub(r'<[^>]+>', '', cell).strip()
+                if text:
+                    plain_cells.append(text)
+
+        duration = plain_cells[0] if len(plain_cells) > 0 else ''
+        date = plain_cells[1] if len(plain_cells) > 1 else ''
+
         if name:
             episodes.append({
                 'id': ep_id,
@@ -255,6 +327,7 @@ def get_opencast_episodes(session, opencast_url):
                 'date': date,
                 'duration': duration,
                 'url': url,
+                'thumb': thumb,
             })
 
     return episodes

@@ -142,12 +142,8 @@ def menu_my_courses():
         xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
         return
 
-    dialog = xbmcgui.DialogProgress()
-    dialog.create('TuKodi', 'Lade Kurse...')
-
     try:
         courses = get_enrolled_courses(session)
-        dialog.close()
 
         if not courses:
             xbmcgui.Dialog().ok('TuKodi', 'Keine Kurse gefunden.')
@@ -162,7 +158,6 @@ def menu_my_courses():
         xbmcplugin.endOfDirectory(HANDLE)
 
     except Exception as e:
-        dialog.close()
         xbmcgui.Dialog().ok('TuKodi', f'Fehler beim Laden der Kurse: {e}')
         xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
 
@@ -232,6 +227,8 @@ def menu_opencast_episodes(opencast_url, opencast_name):
                 label += f'  {ep["duration"]}'
             li = xbmcgui.ListItem(label=label)
             li.setProperty('IsPlayable', 'true')
+            if ep.get('thumb'):
+                li.setArt({'thumb': ep['thumb'], 'icon': ep['thumb']})
             url = get_url(
                 action='play_recording',
                 episode_url=ep['url'],
