@@ -256,7 +256,14 @@ def play_opencast_episode(episode_url, episode_name=''):
             xbmcgui.Dialog().ok('TuKodi', 'Keine Video-URL gefunden.')
             return
 
-        _play_m3u8(video_url, episode_name)
+        # Use native Kodi player for recordings (supports x2+ speed).
+        # Only fall back to ISA for HLS if no MP4 is available.
+        if '.m3u8' in video_url:
+            _play_m3u8(video_url, episode_name)
+        else:
+            li = xbmcgui.ListItem(label=episode_name, path=video_url)
+            li.setContentLookup(False)
+            xbmcplugin.setResolvedUrl(HANDLE, True, li)
 
     except Exception as e:
         xbmcgui.Dialog().ok('TuKodi', f'Fehler beim Laden der Aufzeichnung: {e}')
